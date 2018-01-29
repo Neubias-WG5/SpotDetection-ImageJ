@@ -41,12 +41,15 @@ for(i=0; i<images.length; i++) {
 
 		// Cleanup
 		run("Close All");
+		
+		if(isOpen("Results"))
+		{
+			selectWindow("Results");
+			run("Close");
+		}
+
 	}
 }
 		
-if(isOpen("Results"))
-{
-	selectWindow("Results");
-	run("Close");
-}
+
 run("Quit");

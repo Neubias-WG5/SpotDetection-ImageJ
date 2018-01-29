@@ -6,8 +6,8 @@ from subprocess import call
 from skimage import io
 import numpy as np
 from sldc import locator
-from sldc.locator import affine_transform
-from shapely.ops import cascaded_union
+from shapely.geometry import Point
+from array import *
 from argparse import ArgumentParser
 
 terms=[6625929,6626956,6628031,6628982,6630085,6630930,6632153,6633169,6634164,6635158,6636231,6637186,6638098,6638869,6639680,6640638,6641592,6641602,6641610]

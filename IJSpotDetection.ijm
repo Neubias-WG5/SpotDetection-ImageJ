@@ -1,10 +1,11 @@
 // Author: Sébastien Tosi (IRB Barcelona)
+// Integration: Raphaël Marée and Volker Baecker
 // Version: 1.0
 // Date: 21/04/2017
 
 // Path to input image and result table
-inputDir = "E:\\Projects\\NEUBIAS\\FluoAnnotations\\simcep\\Results\\Img_0001_Spt.tif";
-outputDir = "E:\\Projects\\NEUBIAS\\macroResult\\Results.csv";
+inputDir = "/data/in/";
+outputDir = "/data/out/";
 
 // Functional parameters
 LapRad = 2;

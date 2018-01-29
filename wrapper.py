@@ -32,8 +32,8 @@ parser.add_argument('--cytomine_host', dest="cytomine_host", default='http://loc
 parser.add_argument('--cytomine_public_key', dest="cytomine_public_key", default="77af7d84-b737-4489-8864-d5ad93f4700b")
 parser.add_argument('--cytomine_private_key', dest="cytomine_private_key", default="3ef1f34e-2a9e-4ff8-96ec-df8e57c7dfcd")
 parser.add_argument("--cytomine_id_project", dest="cytomine_id_project", default="5378")
-parser.add_argument("--ij_radius,", dest="radius", default="2")
-parser.add_argument('--ij_noise_tolerance', dest="tolerance", default="2.5")
+parser.add_argument("--ij_lapradius,", dest="radius", default="2")
+parser.add_argument('--ij_noisetol', dest="tolerance", default="2.5")
 arguments, others = parser.parse_known_args(sys.argv)
 radius = arguments.radius
 tolerance = arguments.tolerance

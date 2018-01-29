@@ -15,8 +15,8 @@ execute_command = "python algo/ij_spot_detection/wrapper.py --ij_lapradius $ij_l
 
 #define software parameter template
 software = conn.add_software("IJSpotDetection", "createRabbitJobWithArgsService","ValidateAnnotation", execute_command)
-conn.add_software_parameter("ij_lapradius", software.id, "Number", 5, True, 10, False)
-conn.add_software_parameter("ij_noisetol", software.id, "Number", -0.5, True, 30, False)
+conn.add_software_parameter("ij_lapradius", software.id, "Number", 2, True, 10, False)
+conn.add_software_parameter("ij_noisetol", software.id, "Number", 2.5, True, 30, False)
  
 #for logging (set by server)
 conn.add_software_parameter("cytomine_id_software", software.id, "Number",0, True, 400, True)

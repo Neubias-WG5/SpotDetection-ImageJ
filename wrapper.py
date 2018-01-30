@@ -7,10 +7,7 @@ from skimage import io
 import numpy as np
 from sldc import locator
 from shapely.geometry import Point
-from array import *
 from argparse import ArgumentParser
-
-terms=[6625929,6626956,6628031,6628982,6630085,6630930,6632153,6633169,6634164,6635158,6636231,6637186,6638098,6638869,6639680,6640638,6641592,6641602,6641610]
 
 def readcoords(fname):
 	X = []
@@ -18,6 +15,10 @@ def readcoords(fname):
 	F = open(fname,'r')
 	i = 1
 	for l in F.readlines():
+		print(i)
+		if (i==1):
+			i=i+1
+			continue
 		t = l.split(',')
 		X.append(float(t[1]))
 		Y.append(float(t[2]))
@@ -32,8 +33,8 @@ parser.add_argument('--cytomine_host', dest="cytomine_host", default='http://loc
 parser.add_argument('--cytomine_public_key', dest="cytomine_public_key", default="77af7d84-b737-4489-8864-d5ad93f4700b")
 parser.add_argument('--cytomine_private_key', dest="cytomine_private_key", default="3ef1f34e-2a9e-4ff8-96ec-df8e57c7dfcd")
 parser.add_argument("--cytomine_id_project", dest="cytomine_id_project", default="5378")
-parser.add_argument("--ij_lapradius,", dest="radius", default="2")
-parser.add_argument('--ij_noisetol', dest="tolerance", default="2.5")
+parser.add_argument("--ij_radius,", dest="radius", default="2")
+parser.add_argument('--ij_noise_tolerance', dest="tolerance", default="2.5")
 arguments, others = parser.parse_known_args(sys.argv)
 radius = arguments.radius
 tolerance = arguments.tolerance
@@ -73,6 +74,8 @@ if not os.path.exists(outDir):
 # download the images
 for image in images:
 	# url format: CYTOMINEURL/api/imageinstance/$idOfMyImageInstance/download
+	if "_lbl." in image.filename:
+		continue
 	url = cytomine_host+"/api/imageinstance/" + str(image.id) + "/download"
 	filename = str(image.id) + ".tif"
 	conn.fetch_url_into_file(url, inDir+"/"+filename, True, True) 
@@ -80,7 +83,7 @@ for image in images:
 # call the image analysis workflow in the docker image
 shArgs = "data/in data/out "+radius+" "+tolerance + ""
 job = conn.update_job_status(job, status = job.RUNNING, progress = 25, status_comment = "Launching workflow...")
-command = "docker run --rm -v "+jobFolder+":/fiji/data neubiaswg5/nucleisegmentation-imagej " + shArgs
+command = "docker run --rm -v "+jobFolder+":/fiji/data neubiaswg5/spotdetection-imagej-fjlap " + shArgs
 call(command,shell=True)	# waits for the subprocess to return
 
 # remove existing annotations if any
@@ -98,13 +101,11 @@ for image in images:
 	file = str(image.id) + ".tif.csv"
 	path = outDir + "/" + file
 	if(os.path.isfile(path)):
-		imageData = io.imread(path)
-		(X,Y) = readcoords(fname)
-	  	for i in range(len(terms)):
+		(X,Y) = readcoords(path)
+	  	for i in range(len(X)):
 			circle = Point(X[i],image.height-Y[i])
 			annotation.location=circle.wkt
 			new_annotation = conn.add_annotation(annotation.location, image.id)
-			conn.add_user_annotation_term(new_annotation.id, term=terms[i])
 	else:
 		print path + " does not exist"
 
@@ -113,7 +114,7 @@ job = conn.update_job_status(job, status = job.TERMINATED, progress = 90, status
 
 for image in images:
 	file = str(image.id) + ".tif"
-	path = outDir + "/" + file
+	path = outDir + "/" + file + ".csv"
 	os.remove(path);
 	path = inDir + "/" + file
 	os.remove(path);
